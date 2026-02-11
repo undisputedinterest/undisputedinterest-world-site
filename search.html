@@ -95,20 +95,22 @@
             margin-bottom: 50px;
         }
 
+        /* CORRECTED STYLES FOR REFLECTION */
         .logo-reflect {
             font-weight: bold;
             font-size: 28px;
             color: #039be5;
             display: inline-block;
             position: relative;
-            line-height: 1;
+            line-height: 1.2; /* Slightly increased line-height for better spacing */
+            margin-top: 10px; /* Added margin to give more space for reflection */
         }
 
         .logo-reflect:after {
-            content: "UNDISPUTED INTEREST";
+            content: "UNDISPUTED SEARCH"; /* Make sure this matches the main text if it changes */
             position: absolute;
             left: 0;
-            top: 75%;
+            top: 100%; /* Position the reflection directly below the original text */
             transform: scaleY(-1);
             opacity: 0.15;
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
@@ -199,16 +201,6 @@
     <div id="content-wrapper">
         <nav>
             <a href="index.html">Home</a>
-            <a href="#">Page 2</a>
-            <a href="#">Page 3</a>
-            <a href="#">Page 4</a>
-            <a href="#">Page 5</a>
-            <a href="#">Page 6</a>
-            <a href="#">Page 7</a>
-            <a href="#">Page 8</a>
-            <a href="#">Page 9</a>
-            <a href="#">Page 10</a>
-            <a href="#">Page 11</a>
             <a href="search.html">Search Page</a>
         </nav>
 
