@@ -2,31 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Undisputed Interest World</title>
+    <title>Undisputed Interest World - Bomboclat!</title>
     
-    <!-- THIS IS THE NEW LINE FOR YOUR ICON -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <style>
         body {
-            /* This ensures the image covers the entire background */
             background-image: url('background.jpg');
             background-color: #f0f4f7;
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            background-attachment: fixed; /* Keeps background still while scrolling */
+            background-attachment: fixed;
             
             font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
             color: #444;
             margin: 0;
             padding: 0;
+            overflow: hidden; 
         }
 
         #container {
             width: 950px;
             margin: 30px auto;
-            background: rgba(255, 255, 255, 0.95); /* Slight transparency looks more "Glassy" */
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid #d1d9e0;
             border-radius: 15px;
             overflow: hidden;
@@ -51,7 +50,6 @@
 
         #content-wrapper {
             display: flex;
-            min-height: 600px;
         }
 
         nav {
@@ -86,33 +84,9 @@
 
         #main-content {
             flex: 1;
-            padding: 40px;
+            padding: 20px 40px 40px 40px; 
             line-height: 1.6;
-        }
-
-        .logo-area {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .logo-reflect {
-            font-weight: bold;
-            font-size: 28px;
-            color: #039be5;
-            display: inline-block;
-            position: relative;
-            line-height: 1;
-        }
-
-        .logo-reflect:after {
-            content: "UNDISPUTED INTEREST";
-            position: absolute;
-            left: 0;
-            top: 75%;
-            transform: scaleY(-1);
-            opacity: 0.15;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+            text-align: center; 
         }
 
         .content-box {
@@ -122,7 +96,100 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: inset 0px 0px 10px rgba(0,0,0,0.02);
-            min-height: 300px;
+            margin-top: 0;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 200px; 
+        }
+
+        /* NEW WINDOWS VISTA/FRUTIGER AERO BUTTON STYLES */
+        .bomboclat-btn {
+            padding: 20px 40px;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333; /* Darker text for contrast */
+            /* Glossy blue-green gradient */
+            background: linear-gradient(180deg, #e1f5fe 0%, #81d4fa 50%, #4fc3f7 51%, #29b6f6 100%);
+            border: 1px solid #0288d1; /* Blue border */
+            border-radius: 8px; /* Slightly less rounded than before */
+            cursor: pointer;
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.8), /* Inner light shadow */
+                0 4px 10px rgba(0,0,0,0.2); /* Outer soft shadow */
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            font-family: 'Segoe UI', Arial, sans-serif; /* A font similar to Vista */
+        }
+
+        .bomboclat-btn:before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            height: 50%;
+            border-radius: 7px 7px 0 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0)); /* Shine effect */
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+
+        .bomboclat-btn:hover {
+            background: linear-gradient(180deg, #e1f5fe 0%, #a7ebfa 50%, #6dd3fb 51%, #41c1f9 100%); /* Slightly brighter hover */
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.8),
+                0 6px 15px rgba(0,0,0,0.3); /* More pronounced shadow on hover */
+            transform: translateY(-1px);
+        }
+
+        .bomboclat-btn:active {
+            background: linear-gradient(180deg, #81d4fa 0%, #e1f5fe 100%); /* Pressed state */
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); /* Inner shadow for pressed */
+            transform: translateY(1px);
+        }
+
+        /* OVERLAY FOR BOMBOCLAT TEXT - Updated for Aero colors */
+        #bomboclat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7); /* Slightly lighter background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease-out;
+        }
+
+        #bomboclat-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #bomboclat-text {
+            font-family: Impact, 'Segoe UI', Arial, sans-serif; /* Added Segoe UI as fallback */
+            font-size: 15vw; 
+            color: #e0f2f7; /* Light blue/white color */
+            text-shadow: 
+                -5px -5px 0 #005f7a,  /* Darker blue for outline */
+                5px -5px 0 #005f7a,
+                -5px 5px 0 #005f7a,
+                5px 5px 0 #005f7a,
+                0 0 30px #4fc3f7; /* Blue glow */
+            letter-spacing: 10px;
+            animation: text-pop-in 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; 
+        }
+
+        @keyframes text-pop-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         footer {
@@ -147,14 +214,9 @@
             <a href="index.html">Home</a>
             <a href="search.html">Search Page</a>
         </nav>
-
         <div id="main-content">
-            <div class="logo-area">
-                <div class="logo-reflect">UNDISPUTED INTEREST</div>
-            </div>
-            
             <div class="content-box">
-                Coming Soon...<!-- Content goes here -->
+                <button class="bomboclat-btn" onclick="showBomboclat()">BOMBOCLAT!</button>
             </div>
         </div>
     </div>
@@ -163,6 +225,22 @@
         &copy; 2023 Undisputed Interest World. All rights reserved.
     </footer>
 </div>
+
+<!-- Bomboclat Overlay -->
+<div id="bomboclat-overlay">
+    <span id="bomboclat-text">BOMBOCLAT</span>
+</div>
+
+<script>
+    function showBomboclat() {
+        const overlay = document.getElementById('bomboclat-overlay');
+        overlay.classList.add('show'); 
+
+        setTimeout(() => {
+            overlay.classList.remove('show');
+        }, 1000); 
+    }
+</script>
 
 </body>
 </html>
