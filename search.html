@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <title>Undisputed Interest World - Search</title>
     
-    <!-- THIS IS THE NEW LINE FOR YOUR ICON -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <style>
         body {
-            /* This ensures the image covers the entire background */
             background-image: url('background.jpg');
             background-color: #f0f4f7;
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            background-attachment: fixed; /* Keeps background still while scrolling */
+            background-attachment: fixed;
             
             font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
             color: #444;
@@ -26,7 +24,7 @@
         #container {
             width: 950px;
             margin: 30px auto;
-            background: rgba(255, 255, 255, 0.95); /* Slight transparency looks more "Glassy" */
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid #d1d9e0;
             border-radius: 15px;
             overflow: hidden;
@@ -51,7 +49,7 @@
 
         #content-wrapper {
             display: flex;
-            min-height: 600px;
+            /* Removed min-height to allow it to shrink */
         }
 
         nav {
@@ -86,35 +84,8 @@
 
         #main-content {
             flex: 1;
-            padding: 40px;
+            padding: 20px 40px 40px 40px; 
             line-height: 1.6;
-        }
-
-        .logo-area {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        /* CORRECTED STYLES FOR REFLECTION */
-        .logo-reflect {
-            font-weight: bold;
-            font-size: 28px;
-            color: #039be5;
-            display: inline-block;
-            position: relative;
-            line-height: 1.2; /* Slightly increased line-height for better spacing */
-            margin-top: 10px; /* Added margin to give more space for reflection */
-        }
-
-        .logo-reflect:after {
-            content: "UNDISPUTED SEARCH"; /* Make sure this matches the main text if it changes */
-            position: absolute;
-            left: 0;
-            top: 100%; /* Position the reflection directly below the original text */
-            transform: scaleY(-1);
-            opacity: 0.15;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
         }
 
         .content-box {
@@ -124,10 +95,10 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: inset 0px 0px 10px rgba(0,0,0,0.02);
-            min-height: 300px;
+            /* Removed min-height to allow it to shrink */
+            margin-top: 0;
         }
 
-        /* --- NEW STYLES FOR SEARCH BARS --- */
         .search-engine-block {
             margin-bottom: 30px;
             text-align: center;
@@ -203,15 +174,9 @@
             <a href="index.html">Home</a>
             <a href="search.html">Search Page</a>
         </nav>
-
         <div id="main-content">
-            <div class="logo-area">
-                <div class="logo-reflect">UNDISPUTED SEARCH</div>
-            </div>
-            
             <div class="content-box">
                 
-                <!-- Google Search -->
                 <div class="search-engine-block">
                     <span class="search-label">Google Search</span>
                     <form action="https://www.google.com/search" method="get" target="_blank">
@@ -222,7 +187,6 @@
 
                 <div class="divider"></div>
 
-                <!-- DuckDuckGo Search -->
                 <div class="search-engine-block">
                     <span class="search-label">DuckDuckGo Search</span>
                     <form action="https://duckduckgo.com/" method="get" target="_blank">
