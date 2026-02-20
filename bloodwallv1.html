@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///C:/Users/domin/Downloads/bloodwallv1_9.html -->
+<!-- saved from url=(0052)file:///C:/Users/domin/Downloads/bloodwallv1_11.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1129,6 +1129,8 @@ function wallDestroyed() {
   }
   state.wall = null;
   wallAccum = 0;
+  
+  state.lives--;
   updateHUD();
   
   if (state.lives <= 0) {
