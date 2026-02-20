@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/domin/Downloads/bloodwallv1.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLOODWALL — Cursed JezzBall</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap');
+
+  :root {
+    --blood: #8b0000;
+    --crimson: #cc1030;
+    --bright-red: #ff1a40;
+    --gold: #c9a84c;
+    --dark: #1a0005;
+    --darkest: #0d0008;
+    --pale: #ffe8ec;
+    --glass-red: rgba(180, 0, 30, 0.18);
+    --glass-border: rgba(255, 80, 100, 0.35);
+    --glass-shine: rgba(255, 200, 210, 0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    /* Deep red-to-near-black radial aero background */
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(180,0,30,0.55) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 80%, rgba(120,0,20,0.45) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 40%, rgba(80,0,10,0.3) 0%, transparent 60%),
+      linear-gradient(160deg, #1a0008 0%, #0d0004 50%, #180008 100%);
+    font-family: 'IM Fell English', serif;
+    color: var(--pale);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Subtle aero orb decorations */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px; left: -120px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(200,0,40,0.2) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(40px);
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px; right: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(150,0,30,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(50px);
+  }
+
+  #game-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* === AERO TITLE BAR === */
+  #title-bar {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 20px;
+    letter-spacing: 8px;
+    text-align: center;
+    /* Aero glossy text effect */
+    background: linear-gradient(180deg, #ff8090 0%, #ff1a40 40%, #880010 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 1px 8px rgba(255,50,80,0.5)) drop-shadow(0 0 20px rgba(200,0,30,0.4));
+  }
+
+  /* === HUD — glassy pill === */
+  #hud {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255,100,120,0.12) 0%, rgba(120,0,20,0.25) 100%);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      0 2px 0 rgba(255,150,170,0.15) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset,
+      0 4px 16px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+  }
+
+  .hud-item {
+    color: rgba(255,180,190,0.7);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .hud-sep {
+    width: 1px;
+    height: 14px;
+    background: rgba(255,80,100,0.25);
+    margin: 0 4px;
+  }
+
+  .hud-item span {
+    color: #fff;
+    font-size: 13px;
+    text-shadow: 0 0 8px rgba(255,100,120,0.8), 0 1px 0 rgba(0,0,0,0.6);
+  }
+
+  /* === CANVAS CONTAINER — aero glass frame === */
+  #canvas-container {
+    position: relative;
+    border-radius: 6px;
+    border: 1px solid rgba(255,80,100,0.4);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.6),
+      0 2px 0 rgba(255,120,140,0.2) inset,
+      0 20px 60px rgba(180,0,30,0.4),
+      0 4px 20px rgba(0,0,0,0.7),
+      0 0 80px rgba(150,0,20,0.2);
+    overflow: hidden;
+  }
+
+  /* Gloss overlay on canvas */
+  #canvas-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg,
+      rgba(255,200,210,0.08) 0%,
+      rgba(255,150,170,0.03) 60%,
+      transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+    border-radius: 6px 6px 0 0;
+  }
+
+  #game-canvas {
+    display: block;
+    background: #0a0003;
+  }
+
+  /* === PROGRESS BAR — aero style === */
+  #progress-bar-container {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(40,0,8,0.6) 100%);
+    border: 1px solid rgba(180,0,30,0.4);
+    border-radius: 6px;
+    box-shadow: 0 1px 0 rgba(255,100,120,0.1) inset, 0 2px 6px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+  }
+
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(180deg,
+      rgba(255,120,140,0.9) 0%,
+      #e0102a 35%,
+      #880010 70%,
+      #550008 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(220,20,60,0.7), 0 1px 0 rgba(255,180,190,0.4) inset;
+    position: relative;
+  }
+
+  /* gloss on progress bar */
+  #progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,200,210,0.4) 0%, transparent 100%);
+    border-radius: 5px 5px 0 0;
+  }
+
+  /* === UPGRADE SCREEN === */
+  #upgrade-screen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(60,0,10,0.97) 0%, rgba(8,0,3,0.99) 100%);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    backdrop-filter: blur(4px);
+  }
+
+  #upgrade-screen.active { display: flex; }
+
+  #upgrade-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 26px;
+    letter-spacing: 4px;
+    background: linear-gradient(180deg, #ff9aaa 0%, #ff2050 45%, #990020 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(255,40,80,0.5));
+    text-align: center;
+  }
+
+  #upgrade-subtitle {
+    font-size: 13px;
+    color: rgba(255,160,170,0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: -18px;
+  }
+
+  #upgrade-cards {
+    display: flex;
+    gap: 16px;
+  }
+
+  /* Aero glass upgrade cards */
+  .upgrade-card {
+    width: 195px;
+    padding: 22px 16px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,80,100,0.3);
+    background: linear-gradient(160deg,
+      rgba(255,100,120,0.1) 0%,
+      rgba(150,0,25,0.12) 40%,
+      rgba(20,0,5,0.85) 100%);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    box-shadow:
+      0 2px 0 rgba(255,140,160,0.12) inset,
+      0 -1px 0 rgba(0,0,0,0.3) inset,
+      0 8px 24px rgba(0,0,0,0.6);
+  }
+
+  /* gloss shine on card top */
+  .upgrade-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,180,190,0.1) 0%, transparent 100%);
+    border-radius: 12px 12px 0 0;
+    pointer-events: none;
+  }
+
+  /* bottom glow line */
+  .upgrade-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,80,100,0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .upgrade-card:hover {
+    border-color: rgba(255,100,130,0.65);
+    box-shadow:
+      0 2px 0 rgba(255,160,180,0.18) inset,
+      0 -1px 0 rgba(0,0,0,0.3) inset,
+      0 12px 40px rgba(180,0,30,0.5),
+      0 0 20px rgba(220,20,60,0.3);
+    transform: translateY(-5px) scale(1.025);
+    background: linear-gradient(160deg,
+      rgba(255,120,140,0.18) 0%,
+      rgba(180,0,30,0.18) 40%,
+      rgba(25,0,8,0.9) 100%);
+  }
+
+  .upgrade-card:hover::after { opacity: 1; }
+
+  .upgrade-icon {
+    font-size: 38px;
+    margin-bottom: 10px;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(255,50,80,0.5));
+  }
+
+  .upgrade-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    background: linear-gradient(180deg, #ffb0bc 0%, #ff5070 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .upgrade-desc {
+    font-family: 'IM Fell English', serif;
+    font-size: 11px;
+    color: rgba(255,180,190,0.6);
+    line-height: 1.6;
+  }
+
+  .upgrade-rarity {
+    font-size: 9px;
+    letter-spacing: 2px;
+    margin-top: 12px;
+    padding: 4px 12px;
+    display: inline-block;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: 1px solid;
+    font-family: 'Cinzel', serif;
+  }
+
+  .rarity-common {
+    color: rgba(200,180,185,0.8);
+    border-color: rgba(180,160,165,0.3);
+    background: rgba(100,80,85,0.15);
+  }
+  .rarity-rare {
+    color: #80b0ff;
+    border-color: rgba(80,140,255,0.4);
+    background: rgba(40,80,200,0.12);
+    text-shadow: 0 0 8px rgba(100,150,255,0.5);
+  }
+  .rarity-epic {
+    color: #c080ff;
+    border-color: rgba(160,80,255,0.4);
+    background: rgba(100,40,180,0.12);
+    text-shadow: 0 0 8px rgba(180,100,255,0.5);
+  }
+  .rarity-legendary {
+    color: #ffd060;
+    border-color: rgba(255,200,80,0.5);
+    background: rgba(180,120,0,0.15);
+    text-shadow: 0 0 8px rgba(255,200,80,0.6);
+    animation: glow-gold 1.4s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow-gold {
+    from { box-shadow: 0 0 6px rgba(255,200,80,0.2); }
+    to   { box-shadow: 0 0 16px rgba(255,200,80,0.6); }
+  }
+
+  /* === DEATH SCREEN === */
+  #death-screen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(50,0,8,0.98) 0%, rgba(5,0,2,0.99) 100%);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  #death-screen.active { display: flex; }
+
+  #death-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 52px;
+    letter-spacing: 6px;
+    background: linear-gradient(180deg, #ff6070 0%, #cc0020 50%, #660010 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(220,20,60,0.6));
+    animation: flicker 2.5s infinite;
+  }
+
+  @keyframes flicker {
+    0%,100% { opacity: 1; filter: drop-shadow(0 0 30px rgba(220,20,60,0.6)); }
+    91% { opacity: 1; }
+    92% { opacity: 0.4; filter: drop-shadow(0 0 8px rgba(220,20,60,0.3)); }
+    94% { opacity: 1; filter: drop-shadow(0 0 40px rgba(255,40,80,0.8)); }
+    97% { opacity: 0.7; }
+  }
+
+  #death-stats {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(255,140,160,0.5);
+    text-align: center;
+    line-height: 2.2;
+    text-transform: uppercase;
+  }
+
+  /* === AERO BUTTONS === */
+  button#restart-btn, button#start-btn {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  button#restart-btn {
+    font-size: 13px;
+    padding: 11px 40px;
+    color: #fff;
+    border: 1px solid rgba(255,80,100,0.5);
+    background: linear-gradient(180deg,
+      rgba(255,80,100,0.25) 0%,
+      rgba(180,0,30,0.4) 50%,
+      rgba(100,0,15,0.6) 100%);
+    box-shadow:
+      0 2px 0 rgba(255,150,170,0.2) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset,
+      0 4px 16px rgba(0,0,0,0.5),
+      0 0 20px rgba(180,0,30,0.2);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6), 0 0 10px rgba(255,100,120,0.4);
+  }
+
+  button#restart-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,180,190,0.18) 0%, transparent 100%);
+    border-radius: 24px 24px 0 0;
+    pointer-events: none;
+  }
+
+  button#restart-btn:hover {
+    border-color: rgba(255,120,140,0.8);
+    box-shadow:
+      0 2px 0 rgba(255,180,190,0.25) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset,
+      0 6px 24px rgba(180,0,30,0.5),
+      0 0 30px rgba(220,20,60,0.35);
+    transform: translateY(-2px);
+  }
+
+  button#start-btn {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 14px;
+    padding: 14px 52px;
+    color: #fff;
+    border: 1px solid rgba(255,100,120,0.55);
+    background: linear-gradient(180deg,
+      rgba(255,100,120,0.3) 0%,
+      rgba(200,0,35,0.5) 50%,
+      rgba(110,0,18,0.7) 100%);
+    box-shadow:
+      0 2px 0 rgba(255,160,180,0.2) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset,
+      0 8px 28px rgba(0,0,0,0.6),
+      0 0 25px rgba(200,0,30,0.25);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.7), 0 0 12px rgba(255,100,120,0.4);
+  }
+
+  button#start-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,180,190,0.2) 0%, transparent 100%);
+    border-radius: 24px 24px 0 0;
+    pointer-events: none;
+  }
+
+  button#start-btn:hover {
+    border-color: rgba(255,150,170,0.8);
+    box-shadow:
+      0 2px 0 rgba(255,180,200,0.28) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset,
+      0 10px 36px rgba(180,0,30,0.55),
+      0 0 35px rgba(255,20,60,0.4);
+    transform: translateY(-3px);
+  }
+
+  /* === ACTIVE UPGRADES === */
+  #active-upgrades {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    max-width: 640px;
+    justify-content: center;
+    min-height: 28px;
+  }
+
+  .active-upgrade-badge {
+    font-size: 17px;
+    padding: 3px 7px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,80,100,0.25);
+    background: linear-gradient(180deg, rgba(255,80,100,0.1) 0%, rgba(120,0,20,0.2) 100%);
+    box-shadow: 0 1px 0 rgba(255,140,160,0.1) inset, 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  /* === INTRO SCREEN === */
+  #intro-screen {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 35% 25%, rgba(200,0,35,0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 75%, rgba(140,0,25,0.35) 0%, transparent 50%),
+      linear-gradient(160deg, #1e0008 0%, #0d0004 100%);
+    z-index: 300;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+  }
+
+  #intro-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 58px;
+    letter-spacing: 4px;
+    background: linear-gradient(180deg, #ffaabb 0%, #ff2248 35%, #cc0025 65%, #660010 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(255,30,70,0.5)) drop-shadow(0 2px 0 rgba(0,0,0,0.5));
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  #intro-sub {
+    font-size: 13px;
+    color: rgba(255,140,160,0.55);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+  }
+
+  #intro-instructions {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: rgba(255,160,175,0.45);
+    text-align: center;
+    line-height: 2.3;
+    max-width: 420px;
+    text-transform: uppercase;
+  }
+
+  #intro-instructions b {
+    color: rgba(255,200,210,0.85);
+    font-weight: 700;
+  }
+
+  /* glassy instruction panel */
+  .intro-panel {
+    padding: 18px 30px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,80,100,0.2);
+    background: linear-gradient(160deg, rgba(255,80,100,0.07) 0%, rgba(100,0,15,0.18) 100%);
+    box-shadow:
+      0 2px 0 rgba(255,140,160,0.08) inset,
+      0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  /* blood divider — now aero-style */
+  .blood-line {
+    width: 280px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,60,90,0.5), transparent);
+    box-shadow: 0 0 8px rgba(220,20,60,0.3);
+  }
+
+
+  /* =============================================
+     GOTHIC GLASS FRAME
+  ============================================= */
+
+  #gothic-frame {
+    position: relative;
+    padding: 52px 52px 48px;
+    /* Layered glass border: outer glow → glassy panel → inner bevel */
+    background:
+      linear-gradient(160deg, rgba(255,60,80,0.06) 0%, rgba(80,0,12,0.18) 60%, rgba(10,0,3,0.35) 100%);
+    border-radius: 18px;
+    border: 1px solid rgba(255,60,90,0.28);
+    box-shadow:
+      /* outer crimson glow */
+      0 0 60px rgba(160,0,20,0.35),
+      0 0 120px rgba(100,0,12,0.2),
+      /* drop shadow */
+      0 20px 60px rgba(0,0,0,0.7),
+      /* inner top gloss */
+      0 2px 0 rgba(255,130,150,0.18) inset,
+      /* inner bottom shadow */
+      0 -2px 0 rgba(0,0,0,0.5) inset,
+      /* inner left gloss */
+      2px 0 0 rgba(255,100,120,0.1) inset,
+      /* inner right shadow */
+      -2px 0 0 rgba(0,0,0,0.3) inset;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Top glass gloss sweep */
+  #gothic-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(180deg,
+      rgba(255,160,175,0.07) 0%,
+      rgba(255,80,100,0.03) 40%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Outer decorative border ring */
+  #gothic-frame::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 22px;
+    border: 1px solid rgba(180,0,25,0.18);
+    box-shadow:
+      0 0 0 1px rgba(255,40,70,0.06),
+      0 0 30px rgba(140,0,20,0.15) inset;
+    pointer-events: none;
+  }
+
+  /* === CORNER ORNAMENTS === */
+  .corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 10;
+    filter: drop-shadow(0 0 6px rgba(220,20,60,0.5));
+  }
+  .corner-tl { top: 4px; left: 4px; }
+  .corner-tr { top: 4px; right: 4px; }
+  .corner-bl { bottom: 4px; left: 4px; }
+  .corner-br { bottom: 4px; right: 4px; }
+
+  /* === BUBBLE CHAINS === */
+  .edge-bubbles {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .edge-top    { top: 10px;    left: 60px; right: 60px; flex-direction: row; }
+  .edge-bottom { bottom: 10px; left: 60px; right: 60px; flex-direction: row; }
+  .edge-left   { left: 10px;  top: 60px; bottom: 60px; flex-direction: column; width: 30px; }
+  .edge-right  { right: 10px; top: 60px; bottom: 60px; flex-direction: column; width: 30px; }
+
+  .bubble {
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 30%,
+        rgba(255,200,210,0.65) 0%,
+        rgba(220,30,60,0.45) 35%,
+        rgba(120,0,15,0.5) 65%,
+        rgba(40,0,5,0.3) 100%);
+    border: 1px solid rgba(255,100,130,0.35);
+    box-shadow:
+      0 0 6px rgba(200,0,30,0.4),
+      0 1px 0 rgba(255,180,190,0.4) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset;
+    flex-shrink: 0;
+    animation: bubble-pulse var(--dur, 3s) ease-in-out infinite alternate;
+    animation-delay: var(--delay, 0s);
+  }
+
+  .bubble.b-sm  { width: 7px;  height: 7px;  --dur: 2.8s; }
+  .bubble.b-md  { width: 10px; height: 10px; --dur: 3.4s; }
+  .bubble.b-lg  { width: 14px; height: 14px; --dur: 4s;   }
+
+  /* Stagger delays via nth-child */
+  .bubble:nth-child(1)  { --delay: 0s; }
+  .bubble:nth-child(2)  { --delay: 0.4s; }
+  .bubble:nth-child(3)  { --delay: 0.8s; }
+  .bubble:nth-child(4)  { --delay: 1.2s; }
+  .bubble:nth-child(5)  { --delay: 1.6s; }
+  .bubble:nth-child(6)  { --delay: 2.0s; }
+  .bubble:nth-child(7)  { --delay: 2.4s; }
+  .bubble:nth-child(8)  { --delay: 2.8s; }
+  .bubble:nth-child(9)  { --delay: 3.2s; }
+
+  @keyframes bubble-pulse {
+    from {
+      opacity: 0.45;
+      box-shadow: 0 0 4px rgba(200,0,30,0.3), 0 1px 0 rgba(255,180,190,0.35) inset;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 0.9;
+      box-shadow: 0 0 10px rgba(220,20,60,0.65), 0 1px 0 rgba(255,200,210,0.5) inset;
+      transform: scale(1.08);
+    }
+  }
+
+  /* Side edge gothic filigree lines */
+  .edge-left::before, .edge-right::before,
+  .edge-top::before,  .edge-bottom::before {
+    content: '';
+    position: absolute;
+    background: linear-gradient(to var(--line-dir, right),
+      transparent,
+      rgba(180,0,25,0.25) 20%,
+      rgba(220,20,60,0.15) 50%,
+      rgba(180,0,25,0.25) 80%,
+      transparent);
+    pointer-events: none;
+  }
+  .edge-top::before, .edge-bottom::before {
+    --line-dir: right;
+    left: 0; right: 0;
+    height: 1px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .edge-left::before, .edge-right::before {
+    --line-dir: bottom;
+    top: 0; bottom: 0;
+    width: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #watermark {
+    position: fixed;
+    bottom: 10px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 80, 100, 0.18);
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO SCREEN -->
+<div id="intro-screen">
+  <div id="intro-title">BLOOD<br>WALL</div>
+  <div id="intro-sub">A Cursed JezzBall</div>
+  <div class="blood-line"></div>
+  <div class="intro-panel">
+  <div id="intro-instructions">
+    <b>CLICK</b> to spawn a wall — it grows in both directions<br>
+    <b>SEAL OFF</b> 75% of the arena to advance<br>
+    <b>A BALL TOUCHING</b> your wall destroys it<br>
+    <b>LOSE A LIFE</b> if your wall is destroyed<br>
+    <b>CHOOSE AN UPGRADE</b> after each level
+  </div>
+  </div>
+  <button id="start-btn">BEGIN THE CURSE</button>
+</div>
+
+<!-- UPGRADE SCREEN -->
+<div id="upgrade-screen">
+  <div id="upgrade-title">⚔ DARK BLESSING ⚔</div>
+  <div id="upgrade-subtitle">Choose your corruption wisely</div>
+  <div id="upgrade-cards"></div>
+</div>
+
+<!-- DEATH SCREEN -->
+<div id="death-screen">
+  <div id="death-title">YOU PERISH</div>
+  <div id="death-stats"></div>
+  <button id="restart-btn">RISE AGAIN</button>
+</div>
+
+<!-- GAME -->
+<div id="gothic-frame">
+  <!-- Corner ornaments -->
+  <div class="corner corner-tl"><svg width="60" height="60" viewBox="0 0 60 60"><path d="M2 58 L2 2 L58 2" fill="none" stroke="url(#cgrad)" stroke-width="1.5"></path><circle cx="2" cy="2" r="4" fill="url(#orb)"></circle><circle cx="12" cy="2" r="2" fill="rgba(220,20,60,0.5)"></circle><circle cx="2" cy="12" r="2" fill="rgba(220,20,60,0.5)"></circle><path d="M8 2 Q15 8 8 15 Q15 22 22 15" fill="none" stroke="rgba(180,0,30,0.4)" stroke-width="0.8"></path><defs><lineargradient id="cgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgba(255,80,100,0.8)"></stop><stop offset="100%" stop-color="rgba(139,0,0,0.2)"></stop></lineargradient><radialgradient id="orb"><stop offset="0%" stop-color="rgba(255,150,170,0.9)"></stop><stop offset="60%" stop-color="rgba(200,0,30,0.7)"></stop><stop offset="100%" stop-color="rgba(80,0,10,0.3)"></stop></radialgradient></defs></svg></div>
+  <div class="corner corner-tr"><svg width="60" height="60" viewBox="0 0 60 60"><path d="M58 58 L58 2 L2 2" fill="none" stroke="url(#cgrad2)" stroke-width="1.5"></path><circle cx="58" cy="2" r="4" fill="url(#orb2)"></circle><circle cx="48" cy="2" r="2" fill="rgba(220,20,60,0.5)"></circle><circle cx="58" cy="12" r="2" fill="rgba(220,20,60,0.5)"></circle><path d="M52 2 Q45 8 52 15 Q45 22 38 15" fill="none" stroke="rgba(180,0,30,0.4)" stroke-width="0.8"></path><defs><lineargradient id="cgrad2" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,80,100,0.8)"></stop><stop offset="100%" stop-color="rgba(139,0,0,0.2)"></stop></lineargradient><radialgradient id="orb2"><stop offset="0%" stop-color="rgba(255,150,170,0.9)"></stop><stop offset="60%" stop-color="rgba(200,0,30,0.7)"></stop><stop offset="100%" stop-color="rgba(80,0,10,0.3)"></stop></radialgradient></defs></svg></div>
+  <div class="corner corner-bl"><svg width="60" height="60" viewBox="0 0 60 60"><path d="M2 2 L2 58 L58 58" fill="none" stroke="url(#cgrad3)" stroke-width="1.5"></path><circle cx="2" cy="58" r="4" fill="url(#orb3)"></circle><circle cx="12" cy="58" r="2" fill="rgba(220,20,60,0.5)"></circle><circle cx="2" cy="48" r="2" fill="rgba(220,20,60,0.5)"></circle><defs><lineargradient id="cgrad3" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="rgba(255,80,100,0.8)"></stop><stop offset="100%" stop-color="rgba(139,0,0,0.2)"></stop></lineargradient><radialgradient id="orb3"><stop offset="0%" stop-color="rgba(255,150,170,0.9)"></stop><stop offset="60%" stop-color="rgba(200,0,30,0.7)"></stop><stop offset="100%" stop-color="rgba(80,0,10,0.3)"></stop></radialgradient></defs></svg></div>
+  <div class="corner corner-br"><svg width="60" height="60" viewBox="0 0 60 60"><path d="M58 2 L58 58 L2 58" fill="none" stroke="url(#cgrad4)" stroke-width="1.5"></path><circle cx="58" cy="58" r="4" fill="url(#orb4)"></circle><circle cx="48" cy="58" r="2" fill="rgba(220,20,60,0.5)"></circle><circle cx="58" cy="48" r="2" fill="rgba(220,20,60,0.5)"></circle><defs><lineargradient id="cgrad4" x1="1" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="rgba(255,80,100,0.8)"></stop><stop offset="100%" stop-color="rgba(139,0,0,0.2)"></stop></lineargradient><radialgradient id="orb4"><stop offset="0%" stop-color="rgba(255,150,170,0.9)"></stop><stop offset="60%" stop-color="rgba(200,0,30,0.7)"></stop><stop offset="100%" stop-color="rgba(80,0,10,0.3)"></stop></radialgradient></defs></svg></div>
+
+  <!-- Edge bubble chains -->
+  <div class="edge-bubbles edge-top">
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-lg"></div>
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-sm"></div>
+    <div class="bubble b-lg"></div><div class="bubble b-md"></div><div class="bubble b-sm"></div>
+  </div>
+  <div class="edge-bubbles edge-bottom">
+    <div class="bubble b-sm"></div><div class="bubble b-lg"></div><div class="bubble b-md"></div>
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-lg"></div>
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-sm"></div>
+  </div>
+  <div class="edge-bubbles edge-left">
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-lg"></div>
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-sm"></div>
+  </div>
+  <div class="edge-bubbles edge-right">
+    <div class="bubble b-md"></div><div class="bubble b-sm"></div><div class="bubble b-lg"></div>
+    <div class="bubble b-sm"></div><div class="bubble b-md"></div><div class="bubble b-sm"></div>
+  </div>
+
+  <div id="game-wrapper">
+    <div id="title-bar">BLOODWALL</div>
+    <div id="hud">
+      <div class="hud-item">LEVEL <span id="hud-level">1</span></div>
+      <div class="hud-sep"></div>
+      <div class="hud-item">LIVES <span id="hud-lives">3</span></div>
+      <div class="hud-sep"></div>
+      <div class="hud-item">SEALED <span id="hud-pct">0</span>%</div>
+      <div class="hud-sep"></div>
+      <div class="hud-item">BALLS <span id="hud-balls">2</span></div>
+    </div>
+    <div id="canvas-container">
+      <canvas id="game-canvas" width="640" height="480"></canvas>
+    </div>
+    <div id="progress-bar-container"><div id="progress-bar"></div></div>
+    <div id="active-upgrades"></div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+// Game state
+let state = {
+  level: 1,
+  lives: 3,
+  balls: [],
+  wall: null,
+  sealedCells: null,
+  grid: null,
+  cellSize: 8,
+  cols: 0,
+  rows: 0,
+  phase: 'playing', // 'playing', 'upgrade', 'dead'
+  upgrades: [],
+  // upgrade effects
+  fx: {
+    wallSpeed: 3,
+    extraLivesOnClear: 0,
+    ballSlowMult: 1,
+    killOnWallBreak: false,
+    multiWall: false,
+    multiWallCount: 1,
+    shrinkBalls: 1,
+    bounceWalls: false,
+    startBallCount: 2,
+  }
+};
+
+function initGrid() {
+  state.cols = Math.floor(W / state.cellSize);
+  state.rows = Math.floor(H / state.cellSize);
+  state.grid = new Uint8Array(state.cols * state.rows); // 0=open, 1=sealed, 2=wall
+  state.sealedCells = 0;
+}
+
+function getCellIdx(cx, cy) {
+  return cy * state.cols + cx;
+}
+
+function cellToWorld(cx, cy) {
+  return { x: cx * state.cellSize, y: cy * state.cellSize };
+}
+
+function worldToCell(x, y) {
+  return { cx: Math.floor(x / state.cellSize), cy: Math.floor(y / state.cellSize) };
+}
+
+function getTotalPlayableCells() {
+  return state.cols * state.rows;
+}
+
+function getSealedPercent() {
+  return state.sealedCells / getTotalPlayableCells();
+}
+
+// Flood fill to determine which cells get sealed
+function floodFill(startCells) {
+  const visited = new Uint8Array(state.cols * state.rows);
+  const queue = [];
+  
+  for (const [cx, cy] of startCells) {
+    if (cx < 0 || cy < 0 || cx >= state.cols || cy >= state.rows) continue;
+    const idx = getCellIdx(cx, cy);
+    if (state.grid[idx] !== 0 || visited[idx]) continue;
+    visited[idx] = 1;
+    queue.push([cx, cy]);
+  }
+  
+  let head = 0;
+  while (head < queue.length) {
+    const [cx, cy] = queue[head++];
+    const neighbors = [[cx-1,cy],[cx+1,cy],[cx,cy-1],[cx,cy+1]];
+    for (const [nx, ny] of neighbors) {
+      if (nx < 0 || ny < 0 || nx >= state.cols || ny >= state.rows) continue;
+      const nidx = getCellIdx(nx, ny);
+      if (state.grid[nidx] !== 0 || visited[nidx]) continue;
+      visited[nidx] = 1;
+      queue.push([nx, ny]);
+    }
+  }
+  return visited;
+}
+
+function sealRegions(newWallCells) {
+  // Find all open cells that DON'T contain balls
+  // Flood fill from each ball position
+  // Regions not reachable from any ball get sealed
+  
+  // Mark wall cells
+  for (const [cx, cy] of newWallCells) {
+    const idx = getCellIdx(cx, cy);
+    state.grid[idx] = 1;
+  }
+  
+  // Get ball cell positions
+  const ballCells = state.balls.map(b => {
+    const {cx, cy} = worldToCell(b.x, b.y);
+    return [cx, cy];
+  });
+  
+  // Flood fill from balls
+  const reachable = floodFill(ballCells);
+  
+  // Seal unreachable open cells
+  let newSealed = 0;
+  for (let i = 0; i < state.grid.length; i++) {
+    if (state.grid[i] === 0 && !reachable[i]) {
+      state.grid[i] = 1;
+      newSealed++;
+    }
+  }
+  state.sealedCells += newSealed + newWallCells.length;
+}
+
+// Balls
+function createBall(x, y) {
+  const angle = Math.random() * Math.PI * 2;
+  const speed = (1.2 + Math.random() * 0.8) * state.fx.ballSlowMult;
+  const r = 7 * state.fx.shrinkBalls;
+  const margin = 60;
+  return {
+    x: x !== undefined ? x : margin + Math.random() * (W - margin * 2),
+    y: y !== undefined ? y : margin + Math.random() * (H - margin * 2),
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    r,
+    trail: []
+  };
+}
+
+function spawnBallsForLevel() {
+  state.balls = [];
+  const count = Math.min(state.fx.startBallCount + (state.level - 1) * 2, 16);
+  for (let i = 0; i < count; i++) {
+    state.balls.push(createBall());
+  }
+}
+
+// Wall building
+let pendingWalls = [];
+
+function startWall(x, y) {
+  if (state.phase !== 'playing') return;
+  const {cx, cy} = worldToCell(x, y);
+  if (cx <= 0 || cy <= 0 || cx >= state.cols-1 || cy >= state.rows-1) return;
+  if (state.grid[getCellIdx(cx, cy)] !== 0) return;
+  
+  // Check if already drawing a wall
+  if (state.wall) return;
+
+  // Determine direction: vertical or horizontal based on nothing — player chooses randomly? 
+  // Classic JezzBall: first click = H or V toggle. Let's use alt click or just toggle
+  state.wall = {
+    cx, cy,
+    dir: currentWallDir,
+    posA: currentWallDir === 'h' ? cx : cy,
+    posB: currentWallDir === 'h' ? cx : cy,
+    fixed: currentWallDir === 'h' ? cy : cx,
+    growing: true,
+    cells: [[cx, cy]]
+  };
+}
+
+let currentWallDir = 'h';
+
+function updateWall() {
+  if (!state.wall || !state.wall.growing) return;
+  const w = state.wall;
+  const speed = Math.ceil(state.fx.wallSpeed / 4);
+  
+  for (let s = 0; s < speed; s++) {
+    // Grow in both directions
+    let blocked = { a: false, b: false };
+    
+    // Direction A (negative)
+    const newA = w.posA - 1;
+    const newB = w.posB + 1;
+    
+    if (!blocked.a) {
+      const [cx, cy] = w.dir === 'h' ? [newA, w.fixed] : [w.fixed, newA];
+      if (cx < 0 || cy < 0 || cx >= state.cols || cy >= state.rows) {
+        blocked.a = true;
+      } else {
+        const idx = getCellIdx(cx, cy);
+        if (state.grid[idx] === 1) {
+          blocked.a = true;
+        } else if (state.grid[idx] === 0) {
+          // Check ball collision
+          if (ballHitsCell(cx, cy)) {
+            wallDestroyed();
+            return;
+          }
+          state.grid[idx] = 2;
+          w.cells.push([cx, cy]);
+          w.posA = newA;
+        }
+      }
+    }
+    
+    if (!blocked.b) {
+      const [cx, cy] = w.dir === 'h' ? [newB, w.fixed] : [w.fixed, newB];
+      if (cx < 0 || cy < 0 || cx >= state.cols || cy >= state.rows) {
+        blocked.b = true;
+      } else {
+        const idx = getCellIdx(cx, cy);
+        if (state.grid[idx] === 1) {
+          blocked.b = true;
+        } else if (state.grid[idx] === 0) {
+          if (ballHitsCell(cx, cy)) {
+            wallDestroyed();
+            return;
+          }
+          state.grid[idx] = 2;
+          w.cells.push([cx, cy]);
+          w.posB = newB;
+        }
+      }
+    }
+    
+    if (blocked.a && blocked.b) {
+      // Wall complete! Seal regions
+      const wallCells = [...w.cells];
+      state.wall = null;
+      // Death Rattle: slow all demons on each wall completed
+      if (state.fx.slowOnWall) {
+        for (const b of state.balls) {
+          b.vx *= state.fx.slowOnWall;
+          b.vy *= state.fx.slowOnWall;
+        }
+      }
+      sealRegions(wallCells);
+      checkLevelComplete();
+      return;
+    }
+  }
+}
+
+function ballHitsCell(cx, cy) {
+  const wx = cx * state.cellSize + state.cellSize/2;
+  const wy = cy * state.cellSize + state.cellSize/2;
+  for (const b of state.balls) {
+    const dx = b.x - wx, dy = b.y - wy;
+    if (Math.sqrt(dx*dx+dy*dy) < b.r + state.cellSize * 0.7) return true;
+  }
+  return false;
+}
+
+function wallDestroyed() {
+  if (!state.wall) return;
+  
+  // Clear wall cells
+  for (const [cx, cy] of state.wall.cells) {
+    const idx = getCellIdx(cx, cy);
+    if (state.grid[idx] === 2) state.grid[idx] = 0;
+  }
+  state.wall = null;
+  
+  state.lives--;
+  updateHUD();
+  
+  if (state.lives <= 0) {
+    gameOver();
+  }
+}
+
+function updateBalls() {
+  for (const b of state.balls) {
+    b.trail.push({x: b.x, y: b.y});
+    if (b.trail.length > 8) b.trail.shift();
+    
+    b.x += b.vx;
+    b.y += b.vy;
+    
+    // Wall collision with grid
+    const {cx, cy} = worldToCell(b.x, b.y);
+    
+    // Check if ball hit a growing wall
+    if (state.wall) {
+      for (const [wx, wy] of state.wall.cells) {
+        const worldX = wx * state.cellSize + state.cellSize/2;
+        const worldY = wy * state.cellSize + state.cellSize/2;
+        const dx = b.x - worldX, dy = b.y - worldY;
+        if (Math.sqrt(dx*dx+dy*dy) < b.r + state.cellSize) {
+          wallDestroyed();
+          break;
+        }
+      }
+    }
+    
+    // Border bounce
+    if (b.x - b.r < 0) { b.x = b.r; b.vx = Math.abs(b.vx); }
+    if (b.x + b.r > W) { b.x = W - b.r; b.vx = -Math.abs(b.vx); }
+    if (b.y - b.r < 0) { b.y = b.r; b.vy = Math.abs(b.vy); }
+    if (b.y + b.r > H) { b.y = H - b.r; b.vy = -Math.abs(b.vy); }
+    
+    // Sealed cell bounce
+    const cellsToCheck = 3;
+    for (let dy2 = -cellsToCheck; dy2 <= cellsToCheck; dy2++) {
+      for (let dx2 = -cellsToCheck; dx2 <= cellsToCheck; dx2++) {
+        const ncx = cx + dx2, ncy = cy + dy2;
+        if (ncx < 0 || ncy < 0 || ncx >= state.cols || ncy >= state.rows) continue;
+        const idx = getCellIdx(ncx, ncy);
+        if (state.grid[idx] === 1) {
+          const cellX = ncx * state.cellSize + state.cellSize/2;
+          const cellY = ncy * state.cellSize + state.cellSize/2;
+          const ddx = b.x - cellX, ddy = b.y - cellY;
+          const dist = Math.sqrt(ddx*ddx + ddy*ddy);
+          const minDist = b.r + state.cellSize * 0.7;
+          if (dist < minDist && dist > 0) {
+            const nx = ddx/dist, ny = ddy/dist;
+            const dot = b.vx * nx + b.vy * ny;
+            if (dot < 0) {
+              b.vx -= 2 * dot * nx;
+              b.vy -= 2 * dot * ny;
+            }
+            b.x += nx * (minDist - dist);
+            b.y += ny * (minDist - dist);
+          }
+        }
+      }
+    }
+  }
+}
+
+function checkLevelComplete() {
+  if (getSealedPercent() >= 0.75) {
+    state.lives += state.fx.extraLivesOnClear;
+    levelComplete();
+  }
+}
+
+function levelComplete() {
+  state.phase = 'upgrade';
+  state.wall = null;
+  showUpgradeScreen();
+}
+
+function gameOver() {
+  state.phase = 'dead';
+  const ds = document.getElementById('death-screen');
+  ds.classList.add('active');
+  ds.querySelector('#death-stats').innerHTML = 
+    `LEVEL REACHED: <span style="color:var(--crimson)">${state.level}</span><br>
+     CURSES COLLECTED: <span style="color:var(--crimson)">${state.upgrades.length}</span>`;
+}
+
+function updateHUD() {
+  document.getElementById('hud-level').textContent = state.level;
+  document.getElementById('hud-lives').textContent = state.lives;
+  document.getElementById('hud-balls').textContent = state.balls.length;
+  const pct = Math.floor(getSealedPercent() * 100);
+  document.getElementById('hud-pct').textContent = pct;
+  document.getElementById('progress-bar').style.width = Math.min(pct/75*100, 100) + '%';
+}
+
+// ============ UPGRADES ============
+const UPGRADES_POOL = [
+  {
+    id: 'wall_speed', icon: '💨', name: 'GALE FORCE',
+    desc: 'Your walls grow 20% faster. Stackable.',
+    rarity: 'common',
+    apply: (fx) => { fx.wallSpeed = Math.min(fx.wallSpeed * 1.2, 16); }
+  },
+  {
+    id: 'slow_balls', icon: '⏳', name: 'TEMPORAL CURSE',
+    desc: 'All demons slowed by 10% permanently. Stackable.',
+    rarity: 'rare',
+    apply: (fx) => { 
+      fx.ballSlowMult *= 0.9;
+      for (const b of state.balls) { b.vx *= 0.9; b.vy *= 0.9; }
+    }
+  },
+  {
+    id: 'life_on_clear', icon: '✝️', name: 'RESURRECTION RITE',
+    desc: 'Gain +1 life every time you clear a level. Stackable.',
+    rarity: 'rare',
+    apply: (fx) => { fx.extraLivesOnClear += 1; }
+  },
+  {
+    id: 'shrink_balls', icon: '🔮', name: 'DIMINISHMENT',
+    desc: 'Shrink all demons by 20%. Stackable.',
+    rarity: 'epic',
+    apply: (fx) => {
+      fx.shrinkBalls *= 0.8;
+      for (const b of state.balls) { b.r *= 0.8; }
+    }
+  },
+  {
+    id: 'freeze_start', icon: '❄️', name: 'GLACIAL OPENING',
+    desc: 'Next level begins with demons frozen for 3s. Stackable — adds 3s each time.',
+    rarity: 'rare',
+    apply: (fx) => { fx.frozenTimer = (fx.frozenTimer || 0) + 180; }
+  },
+  {
+    id: 'speed_boost_2', icon: '⚡', name: 'LIGHTNING MASON',
+    desc: 'Wall speed increased by 15%. Stackable.',
+    rarity: 'legendary',
+    apply: (fx) => { fx.wallSpeed = Math.min(fx.wallSpeed * 1.15, 16); }
+  },
+  {
+    id: 'mass_slow', icon: '🕸️', name: 'WEBWEAVER',
+    desc: 'All demons slowed by 25% permanently. Stackable.',
+    rarity: 'legendary',
+    apply: (fx) => {
+      fx.ballSlowMult *= 0.75;
+      for (const b of state.balls) { b.vx *= 0.75; b.vy *= 0.75; }
+    }
+  },
+  {
+    id: 'kill_clear', icon: '☠️', name: 'DEATH RATTLE',
+    desc: 'Each completed wall slows all demons by 3%. Stackable — more picks = bigger slow per wall.',
+    rarity: 'epic',
+    apply: (fx) => { fx.slowOnWall = (fx.slowOnWall || 1) * 0.97; }
+  },
+  {
+    id: 'wall_speed_small', icon: '🌬️', name: 'SWIFT STONE',
+    desc: 'Wall speed +10%. Stackable.',
+    rarity: 'common',
+    apply: (fx) => { fx.wallSpeed = Math.min(fx.wallSpeed * 1.1, 16); }
+  },
+  {
+    id: 'extra_life_2', icon: '💀', name: 'HOLLOW VESSEL',
+    desc: '+1 life. Your body endures.',
+    rarity: 'common',
+    apply: (fx) => { state.lives += 1; }
+  }
+];
+
+function getRandomUpgrades(count) {
+  const shuffled = [...UPGRADES_POOL].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+function showUpgradeScreen() {
+  const screen = document.getElementById('upgrade-screen');
+  const cards = document.getElementById('upgrade-cards');
+  screen.classList.add('active');
+  cards.innerHTML = '';
+  
+  const picks = getRandomUpgrades(3);
+  for (const up of picks) {
+    const card = document.createElement('div');
+    card.className = 'upgrade-card';
+    card.innerHTML = `
+      <span class="upgrade-icon">${up.icon}</span>
+      <div class="upgrade-name">${up.name}</div>
+      <div class="upgrade-desc">${up.desc}</div>
+      <div class="upgrade-rarity rarity-${up.rarity}">${up.rarity.toUpperCase()}</div>
+    `;
+    card.addEventListener('click', () => {
+      selectUpgrade(up);
+      screen.classList.remove('active');
+    });
+    cards.appendChild(card);
+  }
+}
+
+function selectUpgrade(up) {
+  up.apply(state.fx);
+  state.upgrades.push(up);
+  
+  // Update active upgrades display
+  const container = document.getElementById('active-upgrades');
+  const badge = document.createElement('span');
+  badge.className = 'active-upgrade-badge';
+  badge.textContent = up.icon;
+  badge.title = up.name;
+  container.appendChild(badge);
+  
+  // Next level
+  state.level++;
+  startLevel();
+}
+
+function startLevel() {
+  state.phase = 'playing';
+  initGrid();
+  
+  // Apply frozen timer if any
+  spawnBallsForLevel();
+  
+  if (state.fx.frozenTimer) {
+    for (const b of state.balls) {
+      b._frozenTimer = state.fx.frozenTimer;
+      b._storedVx = b.vx;
+      b._storedVy = b.vy;
+      b.vx = 0;
+      b.vy = 0;
+    }
+    state.fx.frozenTimer = 0;
+  }
+  
+  updateHUD();
+}
+
+// ============ RENDERING ============
+let particles = [];
+
+function spawnParticle(x, y, color) {
+  for (let i = 0; i < 3; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 2 + 0.5;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      color
+    });
+  }
+}
+
+let time = 0;
+
+function draw() {
+  ctx.fillStyle = '#0a0003';
+  ctx.fillRect(0, 0, W, H);
+  
+  // Subtle radial vignette
+  const vign = ctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.85);
+  vign.addColorStop(0, 'transparent');
+  vign.addColorStop(1, 'rgba(0,0,0,0.55)');
+  ctx.fillStyle = vign;
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw grid
+  const cs = state.cellSize;
+  
+  // Sealed cells — glossy aero red tiles
+  for (let cy = 0; cy < state.rows; cy++) {
+    for (let cx = 0; cx < state.cols; cx++) {
+      const idx = getCellIdx(cx, cy);
+      const v = state.grid[idx];
+      if (v === 1) {
+        const t = (time * 0.008 + cx * 0.04 + cy * 0.04);
+        const brightness = 0.85 + 0.15 * Math.sin(t);
+        // Base deep red
+        ctx.fillStyle = `rgba(${Math.floor(80*brightness)},0,${Math.floor(10*brightness)},1)`;
+        ctx.fillRect(cx * cs, cy * cs, cs, cs);
+        // Gloss top highlight
+        ctx.fillStyle = `rgba(255,100,120,${0.07 * brightness})`;
+        ctx.fillRect(cx * cs, cy * cs, cs, cs * 0.45);
+        // Subtle border gleam
+        ctx.fillStyle = 'rgba(255,60,80,0.06)';
+        ctx.fillRect(cx * cs, cy * cs, 1, cs);
+        ctx.fillRect(cx * cs, cy * cs, cs, 1);
+      } else if (v === 2) {
+        // Growing wall — bright aero red with glass sheen
+        ctx.fillStyle = '#cc1030';
+        ctx.fillRect(cx * cs, cy * cs, cs, cs);
+        // gloss
+        ctx.fillStyle = 'rgba(255,160,180,0.3)';
+        ctx.fillRect(cx * cs, cy * cs, cs, cs * 0.4);
+        // edge glow
+        ctx.fillStyle = 'rgba(255,40,70,0.25)';
+        ctx.fillRect(cx * cs - 1, cy * cs - 1, cs + 2, cs + 2);
+      }
+    }
+  }
+  
+  // Growing wall extra glow
+  if (state.wall) {
+    ctx.shadowColor = '#ff1a40';
+    ctx.shadowBlur = 10;
+    for (const [cx, cy] of state.wall.cells) {
+      ctx.fillStyle = '#ff2248';
+      ctx.fillRect(cx * cs, cy * cs, cs, cs);
+      // gloss on wall
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,200,210,0.35)';
+      ctx.fillRect(cx * cs, cy * cs, cs, cs * 0.4);
+      ctx.shadowBlur = 10;
+    }
+    ctx.shadowBlur = 0;
+  }
+  
+  // Grid lines (very subtle)
+  ctx.strokeStyle = 'rgba(180,0,20,0.06)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x <= W; x += cs * 8) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y <= H; y += cs * 8) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.life -= 0.05;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+    ctx.globalAlpha = 1;
+  }
+  
+  // Balls — aero glossy spheres
+  for (const b of state.balls) {
+    // Trail
+    for (let i = 0; i < b.trail.length; i++) {
+      const t = b.trail[i];
+      const alpha = (i / b.trail.length) * 0.35;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#cc1030';
+      const r = b.r * (i / b.trail.length);
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    
+    // Outer aero glow halo
+    const halo = ctx.createRadialGradient(b.x, b.y, b.r * 0.5, b.x, b.y, b.r * 3);
+    halo.addColorStop(0, 'rgba(220,20,60,0.25)');
+    halo.addColorStop(0.5, 'rgba(180,0,30,0.08)');
+    halo.addColorStop(1, 'transparent');
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r * 3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Ball body — rich aero gradient
+    const ballGrad = ctx.createRadialGradient(b.x - b.r*0.25, b.y - b.r*0.3, b.r*0.05, b.x, b.y, b.r);
+    ballGrad.addColorStop(0, '#ff7090');
+    ballGrad.addColorStop(0.3, '#ee1535');
+    ballGrad.addColorStop(0.7, '#aa0020');
+    ballGrad.addColorStop(1, '#3d0008');
+    ctx.fillStyle = ballGrad;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Primary gloss highlight — big soft ellipse upper-left
+    ctx.save();
+    ctx.clip();
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    const gloss1 = ctx.createRadialGradient(b.x - b.r*0.28, b.y - b.r*0.38, 0, b.x - b.r*0.1, b.y - b.r*0.2, b.r * 0.7);
+    gloss1.addColorStop(0, 'rgba(255,230,235,0.7)');
+    gloss1.addColorStop(0.4, 'rgba(255,180,200,0.25)');
+    gloss1.addColorStop(1, 'transparent');
+    ctx.fillStyle = gloss1;
+    ctx.beginPath();
+    ctx.ellipse(b.x - b.r*0.15, b.y - b.r*0.3, b.r*0.55, b.r*0.38, -0.3, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+    
+    // Rim light bottom
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    const rimGrad = ctx.createRadialGradient(b.x + b.r*0.2, b.y + b.r*0.5, 0, b.x, b.y, b.r);
+    rimGrad.addColorStop(0, 'rgba(255,80,100,0.2)');
+    rimGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = rimGrad;
+    ctx.fill();
+  }
+  
+  // Border — aero double border with gloss
+  ctx.strokeStyle = 'rgba(255,60,90,0.45)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, W-2, H-2);
+  ctx.strokeStyle = 'rgba(255,120,150,0.12)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(3, 3, W-6, H-6);
+  // Inner shadow top
+  const topGlow = ctx.createLinearGradient(0, 0, 0, 8);
+  topGlow.addColorStop(0, 'rgba(255,150,170,0.08)');
+  topGlow.addColorStop(1, 'transparent');
+  ctx.fillStyle = topGlow;
+  ctx.fillRect(0, 0, W, 8);
+}
+
+// ============ GAME LOOP ============
+let lastTime = 0;
+function gameLoop(timestamp) {
+  const dt = timestamp - lastTime;
+  lastTime = timestamp;
+  time++;
+  
+  if (state.phase === 'playing') {
+    // Update frozen timers
+    for (const b of state.balls) {
+      if (b._frozenTimer > 0) {
+        b._frozenTimer--;
+        if (b._frozenTimer === 0) {
+          b.vx = b._storedVx;
+          b.vy = b._storedVy;
+        }
+      }
+    }
+    
+    updateWall();
+    updateBalls();
+    updateHUD();
+    draw();
+    
+    // Occasional particles from sealed cells (atmosphere)
+    if (time % 8 === 0) {
+      const cx = Math.floor(Math.random() * state.cols);
+      const cy = Math.floor(Math.random() * state.rows);
+      if (state.grid[getCellIdx(cx, cy)] === 1) {
+        spawnParticle(cx * state.cellSize, cy * state.cellSize, 'rgba(139,0,0,0.8)');
+      }
+    }
+  }
+  
+  requestAnimationFrame(gameLoop);
+}
+
+// ============ INPUT ============
+canvas.addEventListener('click', (e) => {
+  if (state.phase !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  if (!state.wall) startWall(x, y);
+});
+
+canvas.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  currentWallDir = currentWallDir === 'h' ? 'v' : 'h';
+});
+
+// Key to toggle direction
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' || e.code === 'KeyR') {
+    currentWallDir = currentWallDir === 'h' ? 'v' : 'h';
+  }
+});
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('intro-screen').style.display = 'none';
+  startLevel();
+  requestAnimationFrame(gameLoop);
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  document.getElementById('death-screen').classList.remove('active');
+  document.getElementById('active-upgrades').innerHTML = '';
+  state.level = 1;
+  state.lives = 3;
+  state.upgrades = [];
+  state.fx = {
+    wallSpeed: 3,
+    extraLivesOnClear: 0,
+    ballSlowMult: 1,
+    killOnWallBreak: false,
+    multiWall: false,
+    multiWallCount: 1,
+    shrinkBalls: 1,
+    bounceWalls: false,
+    startBallCount: 2,
+  };
+  startLevel();
+});
+</script>
+<div id="watermark">undisputed interest world</div>
+
+
+
+</body></html>

@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Undisputed Interest World</title>
+    <title>Undisputed Interest World - Bomboclat!</title>
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             background-image: url('background.jpg');
@@ -21,7 +21,6 @@
             padding: 0;
             overflow: hidden; 
         }
-
         #container {
             width: 950px;
             margin: 30px auto;
@@ -31,7 +30,6 @@
             overflow: hidden;
             box-shadow: 0px 8px 25px rgba(0,0,0,0.1);
         }
-
         header {
             background: #4fc3f7; 
             background: linear-gradient(180deg, #81d4fa 0%, #4fc3f7 50%, #29b6f6 51%, #039be5 100%);
@@ -39,7 +37,6 @@
             text-align: center;
             border-bottom: 2px solid #0288d1;
         }
-
         header h1 {
             color: white;
             margin: 0;
@@ -47,18 +44,15 @@
             text-shadow: 0px 2px 4px rgba(0,0,0,0.2);
             letter-spacing: -1px;
         }
-
         #content-wrapper {
             display: flex;
         }
-
         nav {
             width: 220px;
             background: #f5f5f5;
             padding: 20px 15px;
             border-right: 1px solid #ddd;
         }
-
         nav a {
             display: block;
             color: #555;
@@ -74,21 +68,18 @@
             transition: 0.2s;
             text-align: center;
         }
-
         nav a:hover {
             background: #fff;
             color: #039be5;
             border-color: #039be5;
             box-shadow: 0 0 8px rgba(3, 155, 229, 0.3);
         }
-
         #main-content {
             flex: 1;
             padding: 20px 40px 40px 40px; 
             line-height: 1.6;
             text-align: center; 
         }
-
         .content-box {
             background: #ffffff;
             border: 1px solid #e0e7ee;
@@ -102,7 +93,6 @@
             align-items: center; 
             min-height: 200px; 
         }
-
         footer {
             text-align: center;
             font-size: 11px;
@@ -111,32 +101,74 @@
             background: #f9f9f9;
             border-top: 1px solid #eee;
         }
+
+        .bloodwall-btn {
+            display: inline-block;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-decoration: none;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,100,120,0.55);
+            background: linear-gradient(180deg, rgba(255,100,120,0.3) 0%, rgba(200,0,35,0.5) 50%, rgba(110,0,18,0.7) 100%);
+            box-shadow:
+                0 2px 0 rgba(255,160,180,0.2) inset,
+                0 -1px 0 rgba(0,0,0,0.4) inset,
+                0 8px 28px rgba(0,0,0,0.6),
+                0 0 25px rgba(200,0,30,0.25);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.7), 0 0 12px rgba(255,100,120,0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .bloodwall-btn:hover {
+            border-color: rgba(255,150,170,0.8);
+            box-shadow:
+                0 2px 0 rgba(255,180,200,0.28) inset,
+                0 -1px 0 rgba(0,0,0,0.4) inset,
+                0 10px 36px rgba(180,0,30,0.55),
+                0 0 35px rgba(255,20,60,0.4);
+            transform: translateY(-2px);
+        }
+        .bloodwall-btn .gloss {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,180,190,0.2) 0%, transparent 100%);
+            border-radius: 24px 24px 0 0;
+            pointer-events: none;
+        }
+        .bloodwall-btn span.label {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
-
 <div id="container">
     <header>
         <h1>Undisputed Interest World</h1>
     </header>
-
     <div id="content-wrapper">
         <nav>
             <a href="index.html">Home</a>
-			<a href="va-games.html">Vibe Coded Games</a>
+            <a href="va-games.html">Vibe Coded Games</a>
             <a href="search.html">Search Page</a>
         </nav>
         <div id="main-content">
             <div class="content-box">
-                <!-- Button removed -->
+                <a href="bloodwallv1.html" class="bloodwall-btn">
+                    <span class="gloss"></span>
+                    <span class="label">BLOODWALL</span>
+                </a>
             </div>
         </div>
     </div>
-
     <footer>
         Undisputed Interest World.
     </footer>
 </div>
-
 </body>
 </html>
