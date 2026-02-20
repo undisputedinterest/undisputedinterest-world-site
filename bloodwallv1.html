@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0049)file:///C:/Users/domin/Downloads/bloodwallv1.html -->
+<!-- saved from url=(0051)file:///C:/Users/domin/Downloads/bloodwallv1_9.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -334,34 +334,11 @@
     font-family: 'Cinzel', serif;
   }
 
-  .rarity-common {
-    color: rgba(200,180,185,0.8);
-    border-color: rgba(180,160,165,0.3);
-    background: rgba(100,80,85,0.15);
-  }
-  .rarity-rare {
-    color: #80b0ff;
-    border-color: rgba(80,140,255,0.4);
-    background: rgba(40,80,200,0.12);
-    text-shadow: 0 0 8px rgba(100,150,255,0.5);
-  }
-  .rarity-epic {
-    color: #c080ff;
-    border-color: rgba(160,80,255,0.4);
-    background: rgba(100,40,180,0.12);
-    text-shadow: 0 0 8px rgba(180,100,255,0.5);
-  }
-  .rarity-legendary {
-    color: #ffd060;
-    border-color: rgba(255,200,80,0.5);
-    background: rgba(180,120,0,0.15);
-    text-shadow: 0 0 8px rgba(255,200,80,0.6);
-    animation: glow-gold 1.4s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow-gold {
-    from { box-shadow: 0 0 6px rgba(255,200,80,0.2); }
-    to   { box-shadow: 0 0 16px rgba(255,200,80,0.6); }
+  .rarity-transfusion {
+    color: rgba(255,160,175,0.85);
+    border-color: rgba(255,80,100,0.35);
+    background: rgba(180,0,25,0.12);
+    text-shadow: 0 0 8px rgba(220,20,60,0.4);
   }
 
   /* === DEATH SCREEN === */
@@ -506,14 +483,7 @@
     min-height: 28px;
   }
 
-  .active-upgrade-badge {
-    font-size: 17px;
-    padding: 3px 7px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,80,100,0.25);
-    background: linear-gradient(180deg, rgba(255,80,100,0.1) 0%, rgba(120,0,20,0.2) 100%);
-    box-shadow: 0 1px 0 rgba(255,140,160,0.1) inset, 0 2px 6px rgba(0,0,0,0.4);
-  }
+  /* active upgrade badges now defined below with stack support */
 
   /* === INTRO SCREEN === */
   #intro-screen {
@@ -745,6 +715,56 @@
     transform: translateX(-50%);
   }
 
+  .upgrade-stack-info {
+    margin-top: 10px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(255,60,80,0.1);
+    border: 1px solid rgba(255,80,100,0.25);
+    box-shadow: 0 1px 0 rgba(255,140,160,0.08) inset;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .stack-owned {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255,180,190,0.9);
+    font-weight: 700;
+  }
+
+  .stack-preview {
+    font-family: 'IM Fell English', serif;
+    font-size: 10px;
+    color: rgba(255,140,160,0.65);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .active-upgrade-badge {
+    font-size: 17px;
+    padding: 3px 7px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,80,100,0.25);
+    background: linear-gradient(180deg, rgba(255,80,100,0.1) 0%, rgba(120,0,20,0.2) 100%);
+    box-shadow: 0 1px 0 rgba(255,140,160,0.1) inset, 0 2px 6px rgba(0,0,0,0.4);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .badge-stack {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: rgba(255,160,175,0.9);
+    text-shadow: 0 0 6px rgba(220,20,60,0.5);
+  }
+
   #watermark {
     position: fixed;
     bottom: 10px;
@@ -765,15 +785,15 @@
 <!-- INTRO SCREEN -->
 <div id="intro-screen">
   <div id="intro-title">BLOOD<br>WALL</div>
-  <div id="intro-sub">A Cursed JezzBall</div>
+  <div id="intro-sub">It's time for you to bleed</div>
   <div class="blood-line"></div>
   <div class="intro-panel">
   <div id="intro-instructions">
-    <b>CLICK</b> to spawn a wall — it grows in both directions<br>
-    <b>SEAL OFF</b> 75% of the arena to advance<br>
-    <b>A BALL TOUCHING</b> your wall destroys it<br>
-    <b>LOSE A LIFE</b> if your wall is destroyed<br>
-    <b>CHOOSE AN UPGRADE</b> after each level
+    <div style="white-space:nowrap"><b>CLICK</b> to spawn a wall — it grows in both directions</div>
+    <div><b>SEAL OFF</b> 75% of the arena to advance</div>
+    <div><b>A DONOR TOUCHING</b> your wall destroys it</div>
+    <div><b>LOSE A LIFE</b> if your wall is destroyed</div>
+    <div><b>CHOOSE A TRANSFUSION</b> after each level</div>
   </div>
   </div>
   <button id="start-btn">BEGIN THE CURSE</button>
@@ -781,14 +801,14 @@
 
 <!-- UPGRADE SCREEN -->
 <div id="upgrade-screen">
-  <div id="upgrade-title">⚔ DARK BLESSING ⚔</div>
-  <div id="upgrade-subtitle">Choose your corruption wisely</div>
+  <div id="upgrade-title">⚕ TRANSFUSION AVAILABLE ⚕</div>
+  <div id="upgrade-subtitle">Choose your transfusion</div>
   <div id="upgrade-cards"></div>
 </div>
 
 <!-- DEATH SCREEN -->
 <div id="death-screen">
-  <div id="death-title">YOU PERISH</div>
+  <div id="death-title">YOU HAVE BLED OUT...</div>
   <div id="death-stats"></div>
   <button id="restart-btn">RISE AGAIN</button>
 </div>
@@ -830,7 +850,7 @@
       <div class="hud-sep"></div>
       <div class="hud-item">SEALED <span id="hud-pct">0</span>%</div>
       <div class="hud-sep"></div>
-      <div class="hud-item">BALLS <span id="hud-balls">2</span></div>
+      <div class="hud-item">DONORS <span id="hud-balls">2</span></div>
     </div>
     <div id="canvas-container">
       <canvas id="game-canvas" width="640" height="480"></canvas>
@@ -860,7 +880,7 @@ let state = {
   upgrades: [],
   // upgrade effects
   fx: {
-    wallSpeed: 3,
+    wallSpeed: 0.4,
     extraLivesOnClear: 0,
     ballSlowMult: 1,
     killOnWallBreak: false,
@@ -961,7 +981,7 @@ function sealRegions(newWallCells) {
 // Balls
 function createBall(x, y) {
   const angle = Math.random() * Math.PI * 2;
-  const speed = (1.2 + Math.random() * 0.8) * state.fx.ballSlowMult;
+  const speed = (1.62 + Math.random() * 1.08) * state.fx.ballSlowMult;
   const r = 7 * state.fx.shrinkBalls;
   const margin = 60;
   return {
@@ -996,6 +1016,7 @@ function startWall(x, y) {
 
   // Determine direction: vertical or horizontal based on nothing — player chooses randomly? 
   // Classic JezzBall: first click = H or V toggle. Let's use alt click or just toggle
+  wallAccum = 0;
   state.wall = {
     cx, cy,
     dir: currentWallDir,
@@ -1008,13 +1029,19 @@ function startWall(x, y) {
 }
 
 let currentWallDir = 'h';
+let wallAccum = 0; // fractional accumulator for sub-1 wall speeds
 
 function updateWall() {
   if (!state.wall || !state.wall.growing) return;
   const w = state.wall;
-  const speed = Math.ceil(state.fx.wallSpeed / 4);
+
+  // Accumulate fractional speed — only step when accumulator crosses 1
+  wallAccum += state.fx.wallSpeed;
+  const steps = Math.floor(wallAccum);
+  if (steps === 0) return;
+  wallAccum -= steps;
   
-  for (let s = 0; s < speed; s++) {
+  for (let s = 0; s < steps; s++) {
     // Grow in both directions
     let blocked = { a: false, b: false };
     
@@ -1067,7 +1094,8 @@ function updateWall() {
       // Wall complete! Seal regions
       const wallCells = [...w.cells];
       state.wall = null;
-      // Death Rattle: slow all demons on each wall completed
+      wallAccum = 0;
+      // Anticoagulant Drip: slow all donors on each wall completed
       if (state.fx.slowOnWall) {
         for (const b of state.balls) {
           b.vx *= state.fx.slowOnWall;
@@ -1100,8 +1128,7 @@ function wallDestroyed() {
     if (state.grid[idx] === 2) state.grid[idx] = 0;
   }
   state.wall = null;
-  
-  state.lives--;
+  wallAccum = 0;
   updateHUD();
   
   if (state.lives <= 0) {
@@ -1187,7 +1214,7 @@ function gameOver() {
   ds.classList.add('active');
   ds.querySelector('#death-stats').innerHTML = 
     `LEVEL REACHED: <span style="color:var(--crimson)">${state.level}</span><br>
-     CURSES COLLECTED: <span style="color:var(--crimson)">${state.upgrades.length}</span>`;
+     TRANSFUSIONS RECEIVED: <span style="color:var(--crimson)">${state.upgrades.length}</span>`;
 }
 
 function updateHUD() {
@@ -1202,29 +1229,15 @@ function updateHUD() {
 // ============ UPGRADES ============
 const UPGRADES_POOL = [
   {
-    id: 'wall_speed', icon: '💨', name: 'GALE FORCE',
-    desc: 'Your walls grow 20% faster. Stackable.',
-    rarity: 'common',
-    apply: (fx) => { fx.wallSpeed = Math.min(fx.wallSpeed * 1.2, 16); }
-  },
-  {
-    id: 'slow_balls', icon: '⏳', name: 'TEMPORAL CURSE',
-    desc: 'All demons slowed by 10% permanently. Stackable.',
-    rarity: 'rare',
-    apply: (fx) => { 
-      fx.ballSlowMult *= 0.9;
-      for (const b of state.balls) { b.vx *= 0.9; b.vy *= 0.9; }
-    }
-  },
-  {
-    id: 'life_on_clear', icon: '✝️', name: 'RESURRECTION RITE',
+    id: 'life_on_clear', icon: '🩸', name: 'AUTOLOGOUS DONATION',
     desc: 'Gain +1 life every time you clear a level. Stackable.',
-    rarity: 'rare',
+    previewValue: (stacks) => `+${stacks} life/level → +${stacks + 1} life/level`,
     apply: (fx) => { fx.extraLivesOnClear += 1; }
   },
   {
-    id: 'shrink_balls', icon: '🔮', name: 'DIMINISHMENT',
-    desc: 'Shrink all demons by 20%. Stackable.',
+    id: 'shrink_balls', icon: '🔬', name: 'PLASMAPHERESIS',
+    desc: 'Shrink all donors by 20%. Stackable.',
+    previewValue: (stacks) => `Size: ${Math.round(Math.pow(0.8, stacks) * 100)}% → ${Math.round(Math.pow(0.8, stacks + 1) * 100)}%`,
     rarity: 'epic',
     apply: (fx) => {
       fx.shrinkBalls *= 0.8;
@@ -1232,20 +1245,23 @@ const UPGRADES_POOL = [
     }
   },
   {
-    id: 'freeze_start', icon: '❄️', name: 'GLACIAL OPENING',
-    desc: 'Next level begins with demons frozen for 3s. Stackable — adds 3s each time.',
+    id: 'freeze_start', icon: '🧊', name: 'CRYOPRESERVATION',
+    desc: 'Next level: donors frozen for 3s. Stackable — adds 3s each time.',
+    previewValue: (stacks) => `Freeze: ${stacks * 3}s → ${(stacks + 1) * 3}s next level`,
     rarity: 'rare',
     apply: (fx) => { fx.frozenTimer = (fx.frozenTimer || 0) + 180; }
   },
   {
-    id: 'speed_boost_2', icon: '⚡', name: 'LIGHTNING MASON',
-    desc: 'Wall speed increased by 15%. Stackable.',
+    id: 'speed_boost_2', icon: '💉', name: 'INTRAVENOUS PUSH',
+    desc: 'Wall speed +15%. Stackable.',
+    previewValue: (stacks) => `Wall speed: ${Math.round(Math.pow(1.15, stacks) * 100)}% → ${Math.round(Math.pow(1.15, stacks + 1) * 100)}%`,
     rarity: 'legendary',
     apply: (fx) => { fx.wallSpeed = Math.min(fx.wallSpeed * 1.15, 16); }
   },
   {
-    id: 'mass_slow', icon: '🕸️', name: 'WEBWEAVER',
-    desc: 'All demons slowed by 25% permanently. Stackable.',
+    id: 'mass_slow', icon: '🩺', name: 'THERAPEUTIC PHLEBOTOMY',
+    desc: 'All donors slowed by 25% permanently. Stackable.',
+    previewValue: (stacks) => `Slow: ${Math.round((1 - Math.pow(0.75, stacks)) * 100)}% → ${Math.round((1 - Math.pow(0.75, stacks + 1)) * 100)}%`,
     rarity: 'legendary',
     apply: (fx) => {
       fx.ballSlowMult *= 0.75;
@@ -1253,24 +1269,24 @@ const UPGRADES_POOL = [
     }
   },
   {
-    id: 'kill_clear', icon: '☠️', name: 'DEATH RATTLE',
-    desc: 'Each completed wall slows all demons by 3%. Stackable — more picks = bigger slow per wall.',
+    id: 'kill_clear', icon: '🧬', name: 'ANTICOAGULANT DRIP',
+    desc: 'Each wall completed slows donors by 6%. Stackable.',
+    previewValue: (stacks) => `Per-wall slow: ${Math.round((1 - Math.pow(0.94, stacks)) * 100)}% → ${Math.round((1 - Math.pow(0.94, stacks + 1)) * 100)}% per wall`,
     rarity: 'epic',
-    apply: (fx) => { fx.slowOnWall = (fx.slowOnWall || 1) * 0.97; }
+    apply: (fx) => { fx.slowOnWall = (fx.slowOnWall || 1) * 0.94; }
   },
   {
-    id: 'wall_speed_small', icon: '🌬️', name: 'SWIFT STONE',
-    desc: 'Wall speed +10%. Stackable.',
-    rarity: 'common',
-    apply: (fx) => { fx.wallSpeed = Math.min(fx.wallSpeed * 1.1, 16); }
-  },
-  {
-    id: 'extra_life_2', icon: '💀', name: 'HOLLOW VESSEL',
-    desc: '+1 life. Your body endures.',
+    id: 'extra_life_2', icon: '🏥', name: 'EMERGENCY TRANSFUSION',
+    desc: '+1 life. Critical care administered.',
+    previewValue: () => null,
     rarity: 'common',
     apply: (fx) => { state.lives += 1; }
   }
 ];
+
+function getStackCount(id) {
+  return state.upgrades.filter(u => u.id === id).length;
+}
 
 function getRandomUpgrades(count) {
   const shuffled = [...UPGRADES_POOL].sort(() => Math.random() - 0.5);
@@ -1285,13 +1301,25 @@ function showUpgradeScreen() {
   
   const picks = getRandomUpgrades(3);
   for (const up of picks) {
+    const stacks = getStackCount(up.id);
     const card = document.createElement('div');
     card.className = 'upgrade-card';
+
+    let stackHtml = '';
+    if (stacks > 0) {
+      const preview = up.previewValue ? up.previewValue(stacks) : null;
+      stackHtml = `<div class="upgrade-stack-info">
+        <span class="stack-owned">YOU HAVE: ×${stacks}</span>
+        ${preview ? `<span class="stack-preview">${preview}</span>` : ''}
+      </div>`;
+    }
+
     card.innerHTML = `
       <span class="upgrade-icon">${up.icon}</span>
       <div class="upgrade-name">${up.name}</div>
       <div class="upgrade-desc">${up.desc}</div>
-      <div class="upgrade-rarity rarity-${up.rarity}">${up.rarity.toUpperCase()}</div>
+      ${stackHtml}
+      <div class="upgrade-rarity rarity-transfusion">TRANSFUSION</div>
     `;
     card.addEventListener('click', () => {
       selectUpgrade(up);
@@ -1301,18 +1329,32 @@ function showUpgradeScreen() {
   }
 }
 
+function rebuildUpgradeBadges() {
+  const container = document.getElementById('active-upgrades');
+  container.innerHTML = '';
+  // Count stacks per upgrade id
+  const counts = {};
+  for (const up of state.upgrades) {
+    counts[up.id] = (counts[up.id] || 0) + 1;
+  }
+  // One badge per unique upgrade, with stack count
+  const seen = new Set();
+  for (const up of state.upgrades) {
+    if (seen.has(up.id)) continue;
+    seen.add(up.id);
+    const badge = document.createElement('span');
+    badge.className = 'active-upgrade-badge';
+    const count = counts[up.id];
+    badge.innerHTML = `${up.icon}${count > 1 ? `<span class="badge-stack">×${count}</span>` : ''}`;
+    badge.title = `${up.name}${count > 1 ? ` (×${count})` : ''}`;
+    container.appendChild(badge);
+  }
+}
+
 function selectUpgrade(up) {
   up.apply(state.fx);
   state.upgrades.push(up);
-  
-  // Update active upgrades display
-  const container = document.getElementById('active-upgrades');
-  const badge = document.createElement('span');
-  badge.className = 'active-upgrade-badge';
-  badge.textContent = up.icon;
-  badge.title = up.name;
-  container.appendChild(badge);
-  
+  rebuildUpgradeBadges();
   // Next level
   state.level++;
   startLevel();
@@ -1588,7 +1630,7 @@ document.getElementById('restart-btn').addEventListener('click', () => {
   state.lives = 3;
   state.upgrades = [];
   state.fx = {
-    wallSpeed: 3,
+    wallSpeed: 0.4,
     extraLivesOnClear: 0,
     ballSlowMult: 1,
     killOnWallBreak: false,
@@ -1597,6 +1639,8 @@ document.getElementById('restart-btn').addEventListener('click', () => {
     shrinkBalls: 1,
     bounceWalls: false,
     startBallCount: 2,
+    slowOnWall: null,
+    frozenTimer: 0,
   };
   startLevel();
 });
