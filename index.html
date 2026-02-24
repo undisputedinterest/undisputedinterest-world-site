@@ -5,7 +5,6 @@
     <title>Undisputed Interest World</title>
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-
     <style>
         body {
             background-image: url('background.jpg');
@@ -14,14 +13,12 @@
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            
             font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
             color: #444;
             margin: 0;
             padding: 0;
             overflow: hidden; 
         }
-
         #container {
             width: 950px;
             margin: 30px auto;
@@ -31,15 +28,12 @@
             overflow: hidden;
             box-shadow: 0px 8px 25px rgba(0,0,0,0.1);
         }
-
         header {
-            background: #4fc3f7; 
             background: linear-gradient(180deg, #81d4fa 0%, #4fc3f7 50%, #29b6f6 51%, #039be5 100%);
             padding: 30px;
             text-align: center;
             border-bottom: 2px solid #0288d1;
         }
-
         header h1 {
             color: white;
             margin: 0;
@@ -47,18 +41,16 @@
             text-shadow: 0px 2px 4px rgba(0,0,0,0.2);
             letter-spacing: -1px;
         }
-
         #content-wrapper {
             display: flex;
         }
-
         nav {
             width: 220px;
             background: #f5f5f5;
             padding: 20px 15px;
-            border-right: 1px solid #ddd;
+            border-right: 1px solid #d1d9e0;
+            box-sizing: border-box;
         }
-
         nav a {
             display: block;
             color: #555;
@@ -74,69 +66,93 @@
             transition: 0.2s;
             text-align: center;
         }
-
         nav a:hover {
             background: #fff;
             color: #039be5;
             border-color: #039be5;
             box-shadow: 0 0 8px rgba(3, 155, 229, 0.3);
         }
-
         #main-content {
             flex: 1;
-            padding: 20px 40px 40px 40px; 
-            line-height: 1.6;
-            text-align: center; 
+            padding: 30px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .content-box {
             background: #ffffff;
-            border: 1px solid #e0e7ee;
+            border: 1px solid #d1d9e0;
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: inset 0px 0px 10px rgba(0,0,0,0.02);
-            margin-top: 0;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 200px; 
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .content-box img {
+            display: block;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .content-box img.spinning {
+            animation: spin 0.3s linear infinite;
         }
 
         footer {
             text-align: center;
-            font-size: 11px;
-            color: #999;
-            padding: 20px;
-            background: #f9f9f9;
-            border-top: 1px solid #eee;
+            padding: 18px;
+            background: #f5f5f5;
+            border-top: 1px solid #d1d9e0;
+        }
+        footer a img {
+            vertical-align: middle;
+            transition: opacity 0.2s;
+        }
+        footer a img:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
-
 <div id="container">
     <header>
         <h1>Undisputed Interest World</h1>
     </header>
-
     <div id="content-wrapper">
         <nav>
             <a href="index.html">Home</a>
-			<a href="vc-games.html">Vibe Coded Games</a>
-            <a href="search.html">Search Page</a>
+            <a href="vc-games.html">Vibe Coded Games</a>
         </nav>
         <div id="main-content">
             <div class="content-box">
-                <!-- Button removed -->
+                <img id="logo" src="uxilog.png" width="612" height="373" alt="Undisputed Interest Logo"/>
             </div>
         </div>
     </div>
-
     <footer>
-        Undisputed Interest World.
+        <a href="https://www.youtube.com/@undisputedinterest" target="_blank">
+            <img src="youtube.png" alt="Undisputed Interest YouTube" width="75" height="75">
+        </a>
     </footer>
 </div>
 
+<script>
+    const logo = document.getElementById('logo');
+    let spinTimeout;
+
+    logo.addEventListener('click', () => {
+        clearTimeout(spinTimeout);
+        logo.classList.add('spinning');
+        spinTimeout = setTimeout(() => {
+            logo.classList.remove('spinning');
+        }, 1000);
+    });
+</script>
 </body>
 </html>
